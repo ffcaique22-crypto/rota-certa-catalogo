@@ -1,0 +1,183 @@
+
+<!DOCTYPE html>
+<html lang="pt-BR" class="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title>Rota Certa Motos | !!SUA MOTO NOSSA META!!</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+      :root {
+        --primary: #EF4444; 
+        --bg-dark: #0A0A0A;
+        --bg-card: #141414;
+      }
+      body {
+        font-family: 'Plus Jakarta Sans', sans-serif;
+        background-color: var(--bg-dark);
+        color: #FFFFFF;
+        overflow-x: hidden;
+      }
+      .no-scrollbar::-webkit-scrollbar { display: none; }
+      .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+      
+      .moto-card {
+        background: var(--bg-card);
+        border: 1px solid rgba(255, 255, 255, 0.03);
+        transition: all 0.2s ease;
+      }
+
+      /* Classes de visibilidade do Admin */
+      .admin-only { display: none !important; }
+      body.admin-mode .admin-only { display: flex !important; }
+
+      @keyframes slideUp {
+        from { transform: translateY(100%); }
+        to { transform: translateY(0); }
+      }
+      .animate-slide-up { animation: slideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1); }
+      
+      .service-badge {
+        font-size: 0.95rem;
+        font-weight: 900;
+        padding: 0.5rem 1rem;
+        background: rgba(239, 68, 68, 0.15);
+        color: #EF4444;
+        border: 1px solid rgba(239, 68, 68, 0.3);
+        border-radius: 10px;
+        white-space: nowrap;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+      }
+
+      input, select, textarea {
+        background: #1A1A1A !important;
+        border: 1px solid rgba(255, 255, 255, 0.1) !important;
+      }
+      input:focus, select:focus, textarea:focus {
+        border-color: #EF4444 !important;
+      }
+
+      #whatsapp-fab {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        z-index: 100;
+      }
+    </style>
+  </head>
+  <body class="bg-[#0A0A0A]">
+    <div id="app">
+      <header class="pt-8 pb-6 px-4 flex flex-col items-center text-center border-b border-white/5 bg-black/60 backdrop-blur-md sticky top-0 z-50">
+        <div id="logo-trigger" class="cursor-pointer select-none mb-2">
+          <h1 class="text-4xl font-black italic tracking-tighter text-white">
+            ROTA<span class="text-red-600">CERTA</span>
+          </h1>
+          <p class="text-red-600 font-black text-[12px] tracking-[0.5em] -mt-2 uppercase">MOTOS</p>
+        </div>
+        
+        <p class="text-white font-black text-[11px] italic mb-6 tracking-[0.3em] uppercase">!!SUA MOTO NOSSA META!!</p>
+        
+        <div class="flex flex-wrap justify-center gap-3 mb-6 max-w-sm">
+          <span class="service-badge">📌 COMPRA</span>
+          <span class="service-badge">📌 VENDA</span>
+          <span class="service-badge">📌 TROCA</span>
+          <span class="service-badge">📌 FINANCIA</span>
+        </div>
+
+        <div class="flex items-center space-x-2 text-[11px] text-slate-400 font-black uppercase tracking-wider">
+          <i class="fa-solid fa-location-dot text-red-600"></i>
+          <span>AV FRANCISCO GAIOTTO - 492, CENTRO, CERQUILHO SP</span>
+        </div>
+      </header>
+
+      <main id="moto-grid" class="px-3 pb-24 grid grid-cols-1 gap-4 mt-4">
+        <!-- Motos carregadas do Firebase -->
+        <div class="py-20 text-center text-slate-700 font-bold uppercase text-[10px] tracking-widest animate-pulse">
+          Conectando ao banco de dados...
+        </div>
+      </main>
+
+      <a id="whatsapp-fab" href="https://wa.me/5515997321027" target="_blank" class="w-16 h-16 bg-green-600 text-white rounded-full flex items-center justify-center text-3xl shadow-2xl active:scale-90 transition-transform">
+        <i class="fa-brands fa-whatsapp"></i>
+      </a>
+
+      <footer class="p-10 text-center bg-black border-t border-white/5">
+        <p class="text-[10px] text-slate-500 font-black uppercase tracking-widest mb-1">ROTA CERTA MOTOS</p>
+        <p class="text-[9px] text-slate-700 italic">!!SUA MOTO NOSSA META!!</p>
+      </footer>
+    </div>
+
+    <!-- Login Admin -->
+    <div id="admin-login-modal" class="fixed inset-0 z-[150] bg-black/95 flex items-center justify-center p-6 hidden">
+      <div class="w-full max-w-xs bg-[#141414] p-8 rounded-[32px] border border-white/5 text-center">
+        <div class="w-16 h-16 bg-red-600/10 rounded-2xl flex items-center justify-center mx-auto mb-6">
+          <i class="fa-solid fa-shield-halved text-red-600 text-2xl"></i>
+        </div>
+        <h2 class="text-xl font-black mb-6 italic text-white text-center uppercase tracking-tighter">Acesso do Proprietário</h2>
+        <input type="password" id="admin-password" placeholder="SENHA" class="w-full rounded-2xl p-4 text-center text-white mb-4 outline-none font-bold tracking-widest">
+        <div class="flex space-x-2">
+          <button onclick="document.getElementById('admin-login-modal').classList.add('hidden')" class="flex-1 py-4 bg-white/5 rounded-2xl text-xs font-bold text-white">Sair</button>
+          <button id="confirm-admin-btn" class="flex-1 py-4 bg-red-600 rounded-2xl text-xs font-black text-white">Logar</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Cadastro/Edição -->
+    <div id="admin-add-modal" class="fixed inset-0 z-[200] bg-black/98 overflow-y-auto hidden p-6">
+      <div class="w-full max-w-md mx-auto bg-[#141414] p-8 rounded-[40px] border border-white/5 my-4">
+        <div class="flex justify-between items-center mb-8">
+          <h2 id="modal-title" class="text-2xl font-black italic tracking-tighter text-white uppercase">CADASTRAR MOTO</h2>
+          <button onclick="document.getElementById('admin-add-modal').classList.add('hidden')" class="text-slate-500"><i class="fa-solid fa-xmark text-xl"></i></button>
+        </div>
+        <form id="add-moto-form" class="space-y-4">
+          <input type="file" id="add-image-file" accept="image/*" class="hidden">
+          <label for="add-image-file" id="image-preview-label" class="w-full h-48 bg-white/5 border-2 border-dashed border-white/10 rounded-[32px] flex flex-col items-center justify-center cursor-pointer overflow-hidden">
+            <i class="fa-solid fa-camera text-2xl text-slate-500 mb-2"></i>
+            <span class="text-[10px] font-black uppercase text-slate-500">Foto da Moto</span>
+          </label>
+          <input type="text" id="add-name" placeholder="Modelo / Nome" required class="w-full rounded-2xl p-4 text-white outline-none">
+          <div class="grid grid-cols-2 gap-4">
+            <input type="number" id="add-price" placeholder="Preço (R$)" required class="w-full rounded-2xl p-4 text-white outline-none">
+            <select id="add-category" class="w-full rounded-2xl p-4 text-white outline-none">
+              <option value="Esportiva">Esportiva</option>
+              <option value="Naked">Naked</option>
+              <option value="Trail">Trail</option>
+              <option value="Custom">Custom</option>
+              <option value="Scooter">Scooter</option>
+            </select>
+          </div>
+          <div class="grid grid-cols-3 gap-3">
+            <input type="number" id="add-km" placeholder="KM" required class="w-full rounded-2xl p-4 text-white outline-none">
+            <input type="number" id="add-year" placeholder="Ano" required class="w-full rounded-2xl p-4 text-white outline-none">
+            <input type="number" id="add-cc" placeholder="CC" required class="w-full rounded-2xl p-4 text-white outline-none">
+          </div>
+          <textarea id="add-description" placeholder="Observações (Opcionais, pneus, etc.)" required class="w-full rounded-2xl p-4 text-white outline-none h-24 resize-none"></textarea>
+          <button type="submit" id="save-btn" class="w-full py-5 bg-red-600 rounded-[28px] text-white font-black text-lg mt-4 shadow-xl active:scale-95 transition-transform flex items-center justify-center space-x-2">
+            <i class="fa-solid fa-cloud-arrow-up"></i>
+            <span>SALVAR NO BANCO</span>
+          </button>
+        </form>
+      </div>
+    </div>
+
+    <!-- Modal Detalhes -->
+    <div id="interest-modal-overlay" class="fixed inset-0 bg-black/90 backdrop-blur-md z-[120] hidden"></div>
+    <div id="interest-modal" class="fixed inset-0 z-[130] flex items-end justify-center pointer-events-none hidden">
+      <div class="w-full max-w-xl bg-[#141414] rounded-t-[40px] p-6 animate-slide-up pointer-events-auto border-t border-white/5 max-h-[90vh] overflow-y-auto no-scrollbar">
+        <div id="interest-modal-content"></div>
+      </div>
+    </div>
+
+    <!-- Botão + Admin -->
+    <button id="admin-fab" class="fixed bottom-24 left-6 w-14 h-14 bg-white text-black rounded-full text-xl shadow-2xl z-[140] admin-only active:scale-90 transition-transform flex items-center justify-center">
+      <i class="fa-solid fa-plus"></i>
+    </button>
+
+    <script type="module" src="index.tsx"></script>
+  </body>
+</html>
